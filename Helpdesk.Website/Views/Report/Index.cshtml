@@ -1,0 +1,125 @@
+﻿@using Helpdesk.Repository
+<br />
+<div class="panel panel-default top right-pad">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-1">
+                <label class="control-label">Report: </label>
+            </div>
+            <div class="col-md-2">
+                <select class="form-control" name="reportName" id="reportName" onchange="ShowReport();">
+                    <option value="RptRequestStatus">Request Status</option>
+                    <option value="RptResolvedRequests">Resolved Requests</option>
+                </select>
+            </div>
+        </div>
+        <div class="row top">
+            <div class="col-md-1">
+                <label class="control-label">Application: </label>
+            </div>
+            <div class="col-md-2">
+                <select class="form-control" name="order" id="appfilter">
+                    <option value="All">All</option>
+                    @foreach (var app in (List<SelectListItem>)ViewData["Applications"])
+                    {
+                        <option value="@app.Value">@app.Text</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="row top">
+            <div class="col-md-1">
+                <label class="control-label">Start Date: </label>
+            </div>
+            <div class="col-md-2 left-inner-addon">
+                <div data-date="@DateTime.Now.AddDays(-14).ToString("dd/MM/yyyy")" data-date-format="dd/MM/yyyy">
+                    <i class="glyphicon glyphicon-calendar"></i>
+                    <input id="startDate" class="form-control" type="text" value="@DateTime.Now.AddDays(-14).ToString("dd/MM/yyyy")">
+                </div>
+            </div>
+        </div>
+        <div class="row top">
+            <div class="col-md-1">
+                <label class="control-label">End Date: </label>
+            </div>
+            <div class="col-md-2 left-inner-addon">
+                <div data-date="@DateTime.Now.ToString("dd/MM/yyyy")" data-date-format="dd/MM/yyyy">
+                    <i class="glyphicon glyphicon-calendar"></i>
+                    <input id="endDate" class="form-control" type="text" value="@DateTime.Now.ToString("dd/MM/yyyy")">
+                </div>
+            </div>
+        </div>
+        <div class="row top">
+            <div class="col-md-1">
+
+            </div>
+            <div class="col-md-2">
+                <input type="submit" value="Show Report" onclick="ShowReport();" />
+                <input type="submit" value="Export" onclick="DownloadReport();" />
+            </div>
+        </div>
+
+        <div id="dateAlert"></div>
+        <br />
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row right-pad">
+            <div class="col-md-12">
+                <canvas id="barCanvas"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<br /><br /><br />
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row right-pad">
+            <div class="col-md-8">
+                <canvas id="doughnutCanvas"></canvas>
+            </div>
+            <div class="col-md-4">
+                <span id="doLegend" class="chart-legend"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $("#startDate").datepicker().on('changeDate', function (e) {
+                $('#startDate').datepicker('hide');
+            });
+            $("#endDate").datepicker().on('changeDate', function (e) {
+                $('#endDate').datepicker('hide');
+            });
+            ShowReport();         
+        });
+
+        function DownloadReport() {
+            var report = $('#reportName').val();
+            var startDate = $('#startDate').val();
+            var endDate = $('#endDate').val();
+            var app = $('#appfilter').val();
+
+            var d1 = startDate.split('/');
+            d1 = new Date(d1.pop(), d1.pop() - 1, d1.pop());
+
+            var d2 = endDate.split('/');
+            d2 = new Date(d2.pop(), d2.pop() - 1, d2.pop());
+
+            if (d1 > d2) {
+                $('#dateAlert').html('<div class="alert alert-danger fade in"><a href="#" class="close" data-dismiss="alert">&times;</a><strong>Start Date cannot be greater than the End Date.</strong></div>');
+                $(".alert").delay(2000).fadeOut("slow", function () { $('#dateAlert').html('') });
+                return;
+            }
+
+            var excelUrl = '@Url.Action("DownloadReport")' + '?reportName=' + report + '&startDate=' + startDate + '&endDate=' + endDate + '&appFilter=' + app;
+            window.location = excelUrl;
+            return false;
+        }
+    </script>
+}

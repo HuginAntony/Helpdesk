@@ -1,0 +1,32 @@
+﻿@using Helpdesk.Repository
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("Helpdesk", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav nav-pills navbar-nav">
+                @*<li @((ViewContext.RouteData.Values["controller"].ToString().Equals("home", StringComparison.InvariantCultureIgnoreCase)) ? "class=active" : string.Empty)>@Html.ActionLink("Home", "Index", "Home")</li>*@
+                <li>@Html.ActionLink(" ", "Index", "Home", null, htmlAttributes: new { @class = "glyphicon glyphicon-home" })</li>
+                @if (ViewBag.LoggedIn)
+                {
+                    <li>@Html.ActionLink("New Request", "NewRequest", "Request")</li>
+                    <li>@Html.ActionLink("View Requests", "ViewRequests", "Request")</li>
+                }
+                @if (ViewBag.LoggedIn && ViewBag.Role == "Administrator")
+                {
+                    <li>@Html.ActionLink("Reports", "Index", "Report")</li>
+                    <li>@Html.ActionLink("New User", "Register", "Home", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+                    <li>@Html.ActionLink("Users", "Users", "Home", routeValues: null, htmlAttributes: new { id = "userLink" })</li>
+                }
+                <li>@Html.ActionLink("About", "About", "Home")</li>
+            </ul>
+            @Html.Partial("_LoginPartial")
+        </div>
+    </div>
+</div>

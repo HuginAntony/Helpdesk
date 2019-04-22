@@ -1,0 +1,26 @@
+﻿@using Helpdesk.Repository
+@using Microsoft.AspNet.Identity
+@if (ViewBag.LoggedIn)
+{
+    using (Html.BeginForm("Logout", "Home", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+    @Html.AntiForgeryToken()
+
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            @{
+                var name = string.Format("Logged in: {0} {1} ({2})", ((User) Session["ThisUser"]).Name, ((User) Session["ThisUser"]).Surname, (string)ViewBag.Role);
+            }
+
+            @Html.ActionLink(name, "ManageUser", "Home", new { id = ViewBag.UserId}, htmlAttributes: new {title = "Manage"})
+        </li>
+        <li>@Html.ActionLink("Log off", "Logout", "Home")</li>
+    </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink("Log in", "Login", "Home", routeValues: null, htmlAttributes: new {id = "loginLink"})</li>
+    </ul>
+}
