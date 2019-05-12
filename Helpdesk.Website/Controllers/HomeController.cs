@@ -15,7 +15,7 @@ namespace Helpdesk.Website.Controllers
 
         public ActionResult Index()
         {
-            var report = Repository.GetReport("RptRequestType", DateTime.Now.AddDays(-14), DateTime.Now);
+            var report = Repository.GetReport("RptRequestType", DateTime.Now.AddYears(-5), DateTime.Now);
             
             return View(report);
         }
