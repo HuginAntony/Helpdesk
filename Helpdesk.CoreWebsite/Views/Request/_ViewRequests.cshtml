@@ -1,0 +1,188 @@
+﻿
+@model IEnumerable<Helpdesk.DataAccess.Request>
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover">
+        <tr>
+            <th>
+                No.
+            </th>
+            <th>
+                Application
+            </th>
+            <th>
+                Application Specialist
+            </th>
+            <th>
+                Brand
+            </th>
+            <th>
+                Developer
+            </th>
+            <th>
+                Requestor
+            </th>
+            <th>
+                Title
+            </th>
+            <th>
+
+            </th>
+            <th>
+                Booking Reference
+            </th>
+            <th>
+                Priority
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Request Type
+            </th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Application.Name)
+                </td>
+                <td data-app-spec="@item.Id">
+                    @Html.DisplayFor(modelItem => item.AppSpecialist.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Brand.Name)
+                </td>
+                <td data-row="@item.Id">
+                    @Html.DisplayFor(modelItem => item.Developer.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @{
+            var popId = "pop" + item.Id;
+            var showId = "show" + item.Id;
+                    }
+
+                    <div class="popover-markup thisSize" id="@popId">
+                        <span class="trigger glyphicon glyphicon-info-sign" id="@showId"></span>
+                        <div class="content hide">
+                            <div class="list-group">
+                                <a href="#" class="list-group-item">
+                                    <div class="list-group-item-text">
+                                        <strong>Description:</strong> @item.RequestMessage.First().Message
+                                    </div>
+                                    <div class="list-group-item-text top">
+                                        <strong>Date Created:</strong> @item.DateCreated
+                                    </div>
+                                    <div class="list-group-item-text top">
+                                        <strong>Date Resolved:</strong> @item.DateResolved
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BookingReference)
+                </td>
+                <td>
+                    @{
+                        var priorityClass = "label label-primary";
+                        if (item.Priority == "Medium")
+                        {
+                            priorityClass = "label label-warning";
+                        }
+                        else if (item.Priority == "High")
+                        {
+                            priorityClass = "label label-danger";
+                        }
+                    }
+                    @Html.LabelFor(modelItem => item.Priority, item.Priority, htmlAttributes: new { @class = priorityClass })
+                </td>
+                <td class="text-center">
+                    @{
+                        var statusClass = "";
+
+                        var icon = "glyphicon glyphicon-ok";
+                        if (item.Status == "With Developer")
+                        {
+                            icon = "glyphicon glyphicon-wrench";
+                        }
+                        if (item.Status == "Awaiting Deployment")
+                        {
+                            icon = "glyphicon glyphicon-time";
+                        }
+                        if (item.Status == "New")
+                        {
+                            icon = "glyphicon glyphicon-unchecked";
+                        }
+                        if (item.Status == "Accepted")
+                        {
+                            icon = "glyphicon glyphicon-user";
+                        }
+                    }
+                    @if (item.Status == "New")
+                    {
+                        <img src="~/Content/Images/New.png" class="small" title="@item.Status" />
+                    }
+                    else if (item.Status == "Accepted")
+                    {
+                        <img src="~/Content/Images/Accepted.png" class="small" title="@item.Status" />
+                    }
+                    else
+                    {
+                        <span class="@icon" aria-hidden='true' title="@item.Status"></span>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RequestType)
+                </td>
+                <td>
+                    @Html.ActionLink(" ", "UpdateRequest", new {requestId = item.Id}, htmlAttributes: new {@class = "btn btn-primary btn-xs glyphicon glyphicon-pencil", @title = "Update This Request"})
+                </td>
+                <td>
+                    @if (ViewBag.Role != "User")
+                    {
+                        <a href="#myModal" class="btn btn-primary btn-xs" data-toggle="modal" data-request="@item.Id"><span class="glyphicon glyphicon-link" data-toggle="tooltip" title="Assign To Developer"></span></a>
+                    }
+                </td> 
+                <td>
+                    @if (ViewBag.Role == "AppSpecialist" && item.AppSpecialistId == null)
+                    {
+                        <a id="btnSaveApp" onclick="AssignTo('@item.Id');" class="btn btn-success btn-xs" data-request="@item.Id"><span class="glyphicon glyphicon-thumbs-up" data-toggle="tooltip" title="Accept This Request"></span></a>
+                    }
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" id="devModal">Assign this request to a developer</h4>
+            </div>
+            <div class="modal-body">
+                @*@{ Html.RenderAction("Developers", "Request"); }*@
+                @{ @await Component.InvokeAsync("Developers") }
+            </div>
+            <div class="modal-footer">
+                <button id="btnSave" type="button" class="btn btn-default" data-dismiss="modal">Assign</button>
+            </div>
+        </div>
+    </div>
+</div>

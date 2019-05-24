@@ -1,0 +1,11 @@
+﻿@model int
+
+<div class="container">
+    <div class="row">
+        <div class="info-display">
+            <div class="message info">
+                Request <strong>@Model</strong> has been successfully updated/submitted. Click @Html.ActionLink("here", "UpdateRequest", new { requestId = Model }) to view it.
+            </div>
+        </div>
+    </div>
+</div>

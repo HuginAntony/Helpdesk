@@ -1,0 +1,167 @@
+﻿
+<div class="panel panel-default top right-pad">
+    <div class="panel-body">
+        <div class="form-horizontal">
+            <div class="row left-pad">
+                <div class="col-sm-6 col-lg-3">
+                    <div class="form-group">
+                        <label class="control-label">Start Date:</label>
+                        <div class="left-inner-addon">
+                            <div data-date="@DateTime.Now.AddDays(-14).ToString("dd/MM/yyyy")" data-date-format="dd/mm/yyyy">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                                <input id="startDate" class="form-control" type="text" value="@DateTime.Now.AddDays(-14).ToString("dd/MM/yyyy")">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-lg-3">
+                    <div class="form-group">
+                        <label class="control-label">End Date:</label>
+                        <div class="left-inner-addon">
+                            <div data-date="@DateTime.Now.ToString("dd/MM/yyyy")" data-date-fo data-date-format="dd/mm/yyyy">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                                <input id="endDate" class="form-control" type="text" value="@DateTime.Now.ToString("dd/MM/yyyy")">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2 col-lg-1">
+                    <div class="form-group">
+                        <label class="control-label">Options:</label>
+                        <div>
+                            <button id="btnRefresh" class="btn btn-default glyphicon glyphicon-refresh" title="Refresh Results"></button>
+                            <a class="btn btn-default glyphicon glyphicon-file" href="" id="downExcel" title="Export To Excel"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br/>
+<div id="loadSpinner"></div>
+<div id="dateAlert"></div>
+<div id="requestData"></div>
+
+@section scripts{
+    <script>
+        $(document).ready(function() {
+            var target = document.getElementById('loadSpinner');
+
+
+            $("#startDate").datepicker().on('changeDate', function(e) {
+                var startDate = $('#startDate').val();
+                var endDate = $('#endDate').val();
+                $('#dwnFile').attr('href', '/Request/ExportToExcel?startDate=' + startDate + '&endDate=' + endDate);
+                $('#startDate').datepicker('hide');
+            });
+
+            $("#endDate").datepicker().on('changeDate', function(e) {
+                var startDate = $('#startDate').val();
+                var endDate = $('#endDate').val();
+                $('#dwnFile').attr('href', '/Request/ExportToExcel?startDate=' + startDate + '&endDate=' + endDate);
+                $('#endDate').datepicker('hide');
+            });
+
+            $('#btnRefresh').click(function() {
+                var startDate = $('#startDate').val();
+                var endDate = $('#endDate').val();
+
+                var d1 = startDate.split('/');
+                d1 = new Date(d1.pop(), d1.pop() - 1, d1.pop());
+
+                var d2 = endDate.split('/');
+                d2 = new Date(d2.pop(), d2.pop() - 1, d2.pop());
+
+                if (d1 > d2) {
+                    $('#dateAlert').html('<div class="alert alert-danger fade in"><a href="#" class="close" data-dismiss="alert">&times;</a><strong>Start Date cannot be greater than the End Date.</strong></div>');
+                    $(".alert").delay(2000).fadeOut("slow", function() { $('#dateAlert').html('') });
+                    return;
+                }
+
+                var spinner = new Spinner(opts).spin(target);
+
+                $.ajax({
+                    type: 'GET',
+                    url: "/Request/AllRequests",
+                    data: { startDate: startDate, endDate: endDate },
+                    success: function(data) {
+                        $('#requestData').html(data);
+                        ActivatePopover();
+                        ActivateSave();
+                        spinner.stop();
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        var msg = JSON.parse(XMLHttpRequest.responseText);
+                        alert(msg);
+                    }
+                });
+            });
+
+            $('#downExcel').click(function() {
+                var startDate = $('#startDate').val();
+                var endDate = $('#endDate').val();
+
+                var d1 = startDate.split('/');
+                d1 = new Date(d1.pop(), d1.pop() - 1, d1.pop());
+
+                var d2 = endDate.split('/');
+                d2 = new Date(d2.pop(), d2.pop() - 1, d2.pop());
+
+                if (d1 > d2) {
+                    $('#dateAlert').html('<div class="alert alert-danger fade in"><a href="#" class="close" data-dismiss="alert">&times;</a><strong>Start Date cannot be greater than the End Date.</strong></div>');
+                    $(".alert").delay(2000).fadeOut("slow", function() { $('#dateAlert').html('') });
+                    return false;
+                }
+
+                var spinner2 = new Spinner(opts).spin(target);
+                var excelUrl = '@Url.Action("ExportToExcel")' + '?startDate=' + startDate + '&endDate=' + endDate;
+                window.location = excelUrl;
+
+                setTimeout(function() { spinner2.stop(); }, 2000);
+                
+                return false;
+            });
+
+
+            $('#btnRefresh').click();
+        });
+
+        function ActivateSave() {
+            //For Developers
+            $('button[id^="btnSave"]').click(function() {
+                var requestId = $('#ThisRequestId').val();
+                var developerId = $('#Developers').val();
+
+                $.ajax({
+                    type: 'GET',
+                    url: "/Request/AssignToDeveloper",
+                    data: { requestId: requestId, developerId: developerId },
+                    success: function(name) {
+                        $('td[data-row="' + requestId + '"]').html(name);
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        var msg = JSON.parse(XMLHttpRequest.responseText);
+                        alert(msg);
+                    }
+                });
+            });
+        }
+
+        function AssignTo(id) {
+            $.ajax({
+                type: 'GET',
+                url: "/Request/AssignToAppSpecialist",
+                data: { requestId: id },
+                success: function(name) {
+                    $('td[data-app-spec="' + id + '"]').html(name);
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    var msg = JSON.parse(XMLHttpRequest.responseText);
+                    alert(msg);
+                }
+            });
+        }
+    </script>
+}

@@ -1,0 +1,133 @@
+﻿@model Helpdesk.DataAccess.Request
+
+<div class="row left-pad right-pad">
+    <div class="top">
+        <ul class="list-group">
+            <li class="list-group-item list-group-item-info"><strong>Request Number @Model.Id</strong></li>
+        </ul>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-body">
+
+            <div class="row top">
+                <div class="col-md-2">
+                    <strong>Title:</strong>
+                </div>
+                <div class="col-md-4">@Model.Title</div>
+                <div class="col-md-2">
+                    <strong>Booking Reference:</strong>
+                </div>
+                <div class="col-md-3">@Model.BookingReference</div>
+            </div>
+            <div class="row top">
+                <div class="col-md-2">
+                    <strong>Application:</strong>
+                </div>
+                <div class="col-md-4">@Model.Application.Name</div>
+                <div class="col-md-2">
+                    <strong>Request Type:</strong>
+                </div>
+                <div class="col-md-4">@Model.RequestType</div>
+            </div>
+
+            <div class="row top">
+                <div class="col-md-2">
+                    <strong>Priority:</strong>
+                </div>
+                <div class="col-md-4">@Model.Priority</div>
+                <div class="col-md-2">
+                    <strong>Date Created:</strong>
+                </div>
+                <div class="col-md-4">@Model.DateCreated</div>
+            </div>
+            <div class="row top">
+                <div class="col-md-2">
+                    <strong>Status:</strong>
+                </div>
+                <div class="col-md-4">@Model.Status</div>
+                <div class="col-md-2">
+                    <strong>Date Resolved:</strong>
+                </div>
+                <div class="col-md-4">@Model.DateResolved</div>
+            </div>
+        </div>
+    </div>
+    <br />
+@if (ViewBag.Role != "User" || (ViewBag.Role == "User" && Model.UserId == ViewBag.UserId))
+{
+    using (Html.BeginForm(null, null, FormMethod.Post, new {enctype = "multipart/form-data", @class = "form-group"}))
+     {
+         @Html.AntiForgeryToken()
+
+
+         @Html.ValidationSummary(true, "", new {@class = "text-danger"})
+
+         @Html.Hidden("Id", Model.Id)
+
+         <div class="row top">
+             <div class="col-md-12">
+                 <strong>New Message:</strong>
+             </div>
+         </div>
+         <div class="row top">
+             <div class="col-md-12">
+                 <textarea class="form-control" rows="5" name="Description"></textarea>
+                 @Html.ValidationMessageFor(model => model.RequestMessage.FirstOrDefault().Message, "", new {@class = "text-danger"})
+             </div>
+         </div>
+         <br/>
+         <strong>Attach a File:</strong>
+
+         <div class="panel panel-default">
+             <div class="panel-body">
+                 <input type="file" value="Upload File" name="newFile"/>
+             </div>
+         </div>
+         <br/>
+
+         <div class="row top">
+             <div class="col-md-4">
+                 @if (Model.Status != "Resolved")
+                 {
+                     <input type="submit" value="Update" class="btn btn-default"/>
+                 }
+                 @if (ViewBag.Role == "AppSpecialist" && Model.Status != "Resolved")
+                 {
+                     @Html.ActionLink("Close Request", "CloseRequest", new {requestId = Model.Id}, htmlAttributes: new {@class = "btn btn-default", @id = "btnClose"})
+                 }
+             </div>
+         </div>
+     }
+}
+    <br/>
+    <div class="left-pad">
+        <div class="row top">
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-info"><strong>Request History</strong></li>
+            </ul>
+        </div>
+
+        @if (Model.RequestMessage != null && Model.RequestMessage.Count > 0)
+        {
+            foreach (var message in Model.RequestMessage.OrderByDescending(m => m.Id))
+            {
+                <div class="row top">
+                    <div class="list-group">
+                        <span class="list-group-item">
+                            <h4 class="list-group-item-heading">Date: @message.DateCreated<br />From: @message.User.Name</h4>
+
+                            @if (!string.IsNullOrEmpty(message.AttachmentFilename))
+                            {
+                                <a target="_blank" href="@Url.Action("DownloadAttachment", new {id = message.Id})">@message.AttachmentFilename.ToLower() <span class="glyphicon glyphicon-download-alt"></span></a>
+                            }
+                            <p class="list-group-item-text">Message: @message.Message</p>
+                        </span>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+@section Scripts {
+    Scripts.Render("~/bundles/jqueryval")
+}

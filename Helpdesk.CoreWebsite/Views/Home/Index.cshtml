@@ -1,8 +1,35 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model List<Helpdesk.DataAccess.ViewModels.GenericReport>
+@{
+    ViewBag.Title = "Helpdesk Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="jumbotron">
+    <div class="list-group">
+        <strong>Requests for the last 2 weeks</strong>
+    </div>
+    <div class="list-group">
+        @foreach (var row in Model)
+        {
+            var icon = "";
+            if (row.Label == "Bug")
+            {
+                icon = "glyphicon-wrench";
+            }
+            else if (row.Label == "Enhancement")
+            {
+                icon = "glyphicon-leaf";
+            }
+            else if (row.Label == "Feature")
+            {
+                icon = "glyphicon-gift";
+            }
+            else
+            {
+                icon = "glyphicon-tasks";
+            }
+            <a href="#" class="list-group-item">
+                <span class="glyphicon @icon"></span> @row.Label <span class="badge">@row.Total</span>
+            </a>
+        }
+    </div>
 </div>

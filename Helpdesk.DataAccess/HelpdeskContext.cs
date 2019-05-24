@@ -1,4 +1,5 @@
 ﻿using System;
+using Helpdesk.DataAccess.ViewModels;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -409,6 +410,8 @@ namespace Helpdesk.DataAccess
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_UserId_User");
             });
+
+            modelBuilder.Query<GenericReport>();
         }
     }
 }
