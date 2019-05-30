@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Helpdesk.DataAccess;
 using Helpdesk.DataAccess.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace Helpdesk.CoreWebsite.Helpers
 {
@@ -50,7 +51,12 @@ namespace Helpdesk.CoreWebsite.Helpers
 
         public List<Request> GetRequestsByDate(DateTime startDate, DateTime endDate)
         {
-            return _helpdeskContext.Request.Where(r => r.DateCreated >= startDate && r.DateCreated <= endDate).OrderByDescending(r => r.DateCreated).ToList();
+            return _helpdeskContext.Request.Where(r => r.DateCreated >= startDate && r.DateCreated <= endDate)
+                                   .Include(r=>r.Developer)
+                                   .Include(r=>r.Application)
+                                   .Include(r=>r.AppSpecialist)
+                                   .Include(r=>r.User)
+                                   .OrderByDescending(r => r.DateCreated).ToList();
         }
 
         public List<Request> GetRequestsByDateBrand(DateTime startDate, DateTime endDate, int brandId)

@@ -76,8 +76,8 @@
                     }
 
                     <div class="popover-markup thisSize" id="@popId">
-                        <span class="trigger glyphicon glyphicon-info-sign" id="@showId"></span>
-                        <div class="content hide">
+                        <span class="trigger fas fa-info" id="@showId"></span>
+                        <div class="content invisible">
                             <div class="list-group">
                                 <a href="#" class="list-group-item">
                                     <div class="list-group-item-text">
@@ -115,31 +115,31 @@
                     @{
                         var statusClass = "";
 
-                        var icon = "glyphicon glyphicon-ok";
+                        var icon = "fas fa-ok";
                         if (item.Status == "With Developer")
                         {
-                            icon = "glyphicon glyphicon-wrench";
+                            icon = "fas fa-wrench";
                         }
                         if (item.Status == "Awaiting Deployment")
                         {
-                            icon = "glyphicon glyphicon-time";
+                            icon = "fas fa-time";
                         }
                         if (item.Status == "New")
                         {
-                            icon = "glyphicon glyphicon-unchecked";
+                            icon = "fas fa-unchecked";
                         }
                         if (item.Status == "Accepted")
                         {
-                            icon = "glyphicon glyphicon-user";
+                            icon = "glyphicon fas fa-user";
                         }
                     }
                     @if (item.Status == "New")
                     {
-                        <img src="~/Images/New.png" class="small" title="@item.Status" />
+                        <img src="~/Images/New.png" class="small" title="@item.Status" width="30" height="30"/>
                     }
                     else if (item.Status == "Accepted")
                     {
-                        <img src="~/Images/Accepted.png" class="small" title="@item.Status" />
+                        <img src="~/Images/Accepted.png" class="small" title="@item.Status" width="30" height="30"/>
                     }
                     else
                     {
@@ -150,18 +150,18 @@
                     @Html.DisplayFor(modelItem => item.RequestType)
                 </td>
                 <td>
-                    @Html.ActionLink(" ", "UpdateRequest", new {requestId = item.Id}, htmlAttributes: new {@class = "btn btn-primary btn-xs glyphicon glyphicon-pencil", @title = "Update This Request"})
+                    @Html.ActionLink(" ", "UpdateRequest", new {requestId = item.Id}, htmlAttributes: new {@class = "btn btn-primary btn-xs fas fa-pencil", @title = "Update This Request"})
                 </td>
                 <td>
                     @if (ViewBag.Role != "User")
                     {
-                        <a href="#myModal" class="btn btn-primary btn-xs" data-toggle="modal" data-request="@item.Id"><span class="glyphicon glyphicon-link" data-toggle="tooltip" title="Assign To Developer"></span></a>
+                        <a href="#myModal" class="btn btn-primary btn-xs" data-toggle="modal" data-request="@item.Id"><span class="fas fa-link" data-toggle="tooltip" title="Assign To Developer"></span></a>
                     }
                 </td> 
                 <td>
                     @if (ViewBag.Role == "AppSpecialist" && item.AppSpecialistId == null)
                     {
-                        <a id="btnSaveApp" onclick="AssignTo('@item.Id');" class="btn btn-success btn-xs" data-request="@item.Id"><span class="glyphicon glyphicon-thumbs-up" data-toggle="tooltip" title="Accept This Request"></span></a>
+                        <a id="btnSaveApp" onclick="AssignTo('@item.Id');" class="btn btn-success btn-xs" data-request="@item.Id"><span class="fas fa-thumbs-up" data-toggle="tooltip" title="Accept This Request"></span></a>
                     }
                 </td>
             </tr>
