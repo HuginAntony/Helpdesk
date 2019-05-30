@@ -203,18 +203,18 @@ namespace Helpdesk.CoreWebsite.Controllers
             //Response.End();
         }
 
-        public IActionResult Developers()
-        {
-            var developers = Repository.GetDevelopers();
-            var developerList = developers.Select(f => new SelectListItem()
-            {
-                Text = f.Name,
-                Value = f.Id.ToString()
-            }).ToList();
+        //public IActionResult Developers()
+        //{
+        //    var developers = Repository.GetDevelopers();
+        //    var developerList = developers.Select(f => new SelectListItem()
+        //    {
+        //        Text = f.Name,
+        //        Value = f.Id.ToString()
+        //    }).ToList();
 
-            ViewData["Developers"] = developerList;
-            return PartialView("_Developers");
-        }
+        //    ViewData["Developers"] = developerList;
+        //    return PartialView("_Developers");
+        //}
 
         public IActionResult AssignToDeveloper(int requestId, int developerId)
         {
