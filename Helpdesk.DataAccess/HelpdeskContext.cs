@@ -1,8 +1,5 @@
-﻿using System;
-using Helpdesk.DataAccess.ViewModels;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Helpdesk.DataAccess
 {
@@ -411,7 +408,7 @@ namespace Helpdesk.DataAccess
                     .HasConstraintName("FK_UserId_User");
             });
 
-            modelBuilder.Query<GenericReport>();
+            //modelBuilder.Query<GenericReport>();
         }
     }
 }

@@ -11,9 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpdesk.Repository", "Help
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpdesk.Core", "Helpdesk.Core\Helpdesk.Core.csproj", "{4E0F219A-D984-4A2D-AA85-03C494843238}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpdesk.DataAccess", "Helpdesk.DataAccess\Helpdesk.DataAccess.csproj", "{BEF2B41C-ECF7-4038-B291-7EB3CBE17031}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpdesk.CoreWebsite", "Helpdesk.CoreWebsite\Helpdesk.CoreWebsite.csproj", "{3CA9179A-05F0-476B-B751-EF7E0795651D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Helpdesk.DataAccess", "Helpdesk.DataAccess\Helpdesk.DataAccess.csproj", "{BEF2B41C-ECF7-4038-B291-7EB3CBE17031}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +39,6 @@ Global
 		{BEF2B41C-ECF7-4038-B291-7EB3CBE17031}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEF2B41C-ECF7-4038-B291-7EB3CBE17031}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEF2B41C-ECF7-4038-B291-7EB3CBE17031}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3CA9179A-05F0-476B-B751-EF7E0795651D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3CA9179A-05F0-476B-B751-EF7E0795651D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3CA9179A-05F0-476B-B751-EF7E0795651D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3CA9179A-05F0-476B-B751-EF7E0795651D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
